@@ -87,15 +87,25 @@ data class OverlayOption(val label: String, val value16ths: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FieldCard(title: String, input: MeasureInput, selected: Boolean, onSelect: () -> Unit) {
-    ElevatedCard(onClick = onSelect, modifier = Modifier.weight(1f)) {
+fun FieldCard(
+    title: String,
+    input: MeasureInput,
+    selected: Boolean,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ElevatedCard(onClick = onSelect, modifier = modifier) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(title, style = MaterialTheme.typography.labelLarge)
-            Text(input.formatted(), style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold))
+            Text(
+                input.formatted(),
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
+            )
             AssistChip(onClick = onSelect, label = { Text(if (selected) "Active" else "Tap to edit") })
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
