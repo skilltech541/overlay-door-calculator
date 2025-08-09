@@ -344,16 +344,18 @@ fun Keypad(
 
 @Composable
 fun FractionGrid(onFraction: (Int) -> Unit) {
-    val fractions = listOf(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        for (row in fractions.chunked(5)) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                row.forEach { f -> OutlinedButton(onClick = { onFraction(f) }, modifier = Modifier.weight(1f)) { Text(format16ths(f)) } }
-                repeat(5 - row.size) { Spacer(modifier = Modifier.weight(1f)) }
-            }
+    val fractions = (1..15).toList() // or your custom list
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+        items(fractions.size) { i ->
+            val f = fractions[i]
+            AssistChip(
+                onClick = { onFraction(f) },
+                label = { Text(format16ths(f)) }
+            )
         }
     }
 }
+
 
 @Composable
 fun FractionRow(label: String, value16ths: Int, onChange: (Int) -> Unit) {
