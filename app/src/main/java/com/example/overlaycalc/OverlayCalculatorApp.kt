@@ -42,9 +42,7 @@ fun OverlayCalculatorApp() {
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Overlay Door Calculator", fontWeight = FontWeight.Bold) },
-                actions = {
-                    Icon(painter = painterResource(id = R.drawable.nhance_logo), contentDescription = "N-Hance")
-                }
+                actions = { Icon(painter = painterResource(id = R.drawable.nhance_logo), contentDescription = "N-Hance") }
             )
         }
     ) { inner ->
