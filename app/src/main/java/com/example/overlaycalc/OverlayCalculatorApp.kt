@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.example.overlaycalc
 
 import androidx.compose.foundation.layout.*
@@ -42,32 +44,44 @@ fun OverlayCalculatorApp() {
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Overlay Door Calculator", fontWeight = FontWeight.Bold) },
-                actions = { Icon(painter = painterResource(id = R.drawable.nhance_logo), contentDescription = "N-Hance") }
+                actions = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.nhance_logo),
+                        contentDescription = "N-Hance"
+                    )
+                }
             )
         }
     ) { inner ->
         Column(
-            modifier = Modifier.padding(inner).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            modifier = Modifier
+                .padding(inner)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Enter opening size. Overlay is applied per side (width: left+right, height: top+bottom).")
 
-           Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-    FieldCard(
-        title = "Opening Width",
-        input = width,
-        selected = (activeField == ActiveField.WIDTH),
-        onSelect = { activeField = ActiveField.WIDTH },
-        modifier = Modifier.weight(1f)
-    )
-    FieldCard(
-        title = "Opening Height",
-        input = height,
-        selected = (activeField == ActiveField.HEIGHT),
-        onSelect = { activeField = ActiveField.HEIGHT },
-        modifier = Modifier.weight(1f)
-    )
-}
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                FieldCard(
+                    title = "Opening Width",
+                    input = width,
+                    selected = (activeField == ActiveField.WIDTH),
+                    onSelect = { activeField = ActiveField.WIDTH },
+                    modifier = Modifier.weight(1f)
+                )
+                FieldCard(
+                    title = "Opening Height",
+                    input = height,
+                    selected = (activeField == ActiveField.HEIGHT),
+                    onSelect = { activeField = ActiveField.HEIGHT },
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
             OverlaySelector(
                 options = overlayOptions,
@@ -77,18 +91,46 @@ fun OverlayCalculatorApp() {
                 onCustomChanged = { customOverlay16ths = it }
             )
 
-            SplitSelector(splitDoors = splitDoors, onToggle = { splitDoors = it }, centerGap16ths = centerGap16ths, onGapChanged = { centerGap16ths = it })
+            SplitSelector(
+                splitDoors = splitDoors,
+                onToggle = { splitDoors = it },
+                centerGap16ths = centerGap16ths,
+                onGapChanged = { centerGap16ths = it }
+            )
 
             ResultCard(finished = finished, perDoor = perDoor)
 
             Divider()
 
             Keypad(
-                onDigit = { d -> when (activeField) { ActiveField.WIDTH -> width = width.addDigit(d); ActiveField.HEIGHT -> height = height.addDigit(d) } },
-                onFraction = { f16 -> when (activeField) { ActiveField.WIDTH -> width = width.setFraction(f16); ActiveField.HEIGHT -> height = height.setFraction(f16) } },
-                onBackspace = { when (activeField) { ActiveField.WIDTH -> width = width.backspace(); ActiveField.HEIGHT -> height = height.backspace() } },
-                onClear = { when (activeField) { ActiveField.WIDTH -> width = MeasureInput(); ActiveField.HEIGHT -> height = MeasureInput() } },
-                onSwap = { activeField = if (activeField == ActiveField.WIDTH) ActiveField.HEIGHT else ActiveField.WIDTH }
+                onDigit = { d ->
+                    when (activeField) {
+                        ActiveField.WIDTH -> width = width.addDigit(d)
+                        ActiveField.HEIGHT -> height = height.addDigit(d)
+                    }
+                },
+                onFraction = { f16 ->
+                    when (activeField) {
+                        ActiveField.WIDTH -> width = width.setFraction(f16)
+                        ActiveField.HEIGHT -> height = height.setFraction(f16)
+                    }
+                },
+                onBackspace = {
+                    when (activeField) {
+                        ActiveField.WIDTH -> width = width.backspace()
+                        ActiveField.HEIGHT -> height = height.backspace()
+                    }
+                },
+                onClear = {
+                    when (activeField) {
+                        ActiveField.WIDTH -> width = MeasureInput()
+                        ActiveField.HEIGHT -> height = MeasureInput()
+                    }
+                },
+                onSwap = {
+                    activeField =
+                        if (activeField == ActiveField.WIDTH) ActiveField.HEIGHT else ActiveField.WIDTH
+                }
             )
         }
     }
@@ -97,7 +139,6 @@ fun OverlayCalculatorApp() {
 enum class ActiveField { WIDTH, HEIGHT }
 data class OverlayOption(val label: String, val value16ths: Int)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FieldCard(
     title: String,
@@ -118,8 +159,6 @@ fun FieldCard(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OverlaySelector(
     options: List<OverlayOption>,
@@ -135,14 +174,24 @@ fun OverlaySelector(
             ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
                 TextField(
                     readOnly = true,
-                    value = if (selected.value16ths >= 0) selected.label else "Custom: ${format16ths(customValue16ths)} per side",
+                    value = if (selected.value16ths >= 0)
+                        selected.label
+                    else
+                        "Custom: ${format16ths(customValue16ths)} per side",
                     onValueChange = {},
                     label = { Text("Overlay") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    options.forEach { opt -> DropdownMenuItem(text = { Text(opt.label) }, onClick = { onSelected(opt); expanded = false }) }
+                    options.forEach { opt ->
+                        DropdownMenuItem(
+                            text = { Text(opt.label) },
+                            onClick = { onSelected(opt); expanded = false }
+                        )
+                    }
                 }
             }
             if (selected.value16ths < 0) {
@@ -153,7 +202,12 @@ fun OverlaySelector(
 }
 
 @Composable
-fun SplitSelector(splitDoors: Boolean, onToggle: (Boolean) -> Unit, centerGap16ths: Int, onGapChanged: (Int) -> Unit) {
+fun SplitSelector(
+    splitDoors: Boolean,
+    onToggle: (Boolean) -> Unit,
+    centerGap16ths: Int,
+    onGapChanged: (Int) -> Unit
+) {
     ElevatedCard {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -199,13 +253,21 @@ fun ResultCard(finished: FinishedSize, perDoor: PerDoor?) {
     }
 }
 
-data class MeasureInput(val inches: Int = 0, val fraction16ths: Int = 0, val hasFraction: Boolean = false) {
+data class MeasureInput(
+    val inches: Int = 0,
+    val fraction16ths: Int = 0,
+    val hasFraction: Boolean = false
+) {
     fun formatted(): String = buildString {
-        append("$inches"); if (hasFraction && fraction16ths != 0) { append(" "); append(format16ths(fraction16ths)) }; append("\"")
+        append("$inches")
+        if (hasFraction && fraction16ths != 0) { append(" "); append(format16ths(fraction16ths)) }
+        append("\"")
     }
     fun addDigit(d: Int): MeasureInput = copy(inches = (inches * 10 + d).coerceAtMost(999))
     fun setFraction(f16: Int): MeasureInput = copy(fraction16ths = f16, hasFraction = true)
-    fun backspace(): MeasureInput = if (hasFraction && fraction16ths != 0) copy(fraction16ths = 0, hasFraction = false) else copy(inches = inches / 10)
+    fun backspace(): MeasureInput =
+        if (hasFraction && fraction16ths != 0) copy(fraction16ths = 0, hasFraction = false)
+        else copy(inches = inches / 10)
     fun total16ths(): Int = inches * 16 + (if (hasFraction) fraction16ths else 0)
 }
 
@@ -233,13 +295,29 @@ data class PerDoor(val width16: Int, val centerGap16: Int) {
     }
 }
 
-fun gcd(a: Int, b: Int): Int { var x = kotlin.math.abs(a); var y = kotlin.math.abs(b); while (y != 0) { val t = x % y; x = y; y = t }; return if (x == 0) 1 else x }
+fun gcd(a: Int, b: Int): Int {
+    var x = kotlin.math.abs(a); var y = kotlin.math.abs(b)
+    while (y != 0) { val t = x % y; x = y; y = t }
+    return if (x == 0) 1 else x
+}
 fun roundToNearest16th(value16ths: Int): Int = value16ths
-fun format16ths(frac16: Int): String { val denom = 16; if (frac16 == 0) return "0"; val g = gcd(frac16, denom); val n = frac16 / g; val d = denom / g; return "$n/$d" }
-fun formatTotal16ths(total16: Int): String { val inches = total16 / 16; val frac = total16 % 16; return if (frac == 0) "$inches\"" else "$inches ${format16ths(frac)}\"" }
+fun format16ths(frac16: Int): String {
+    val denom = 16; if (frac16 == 0) return "0"
+    val g = gcd(frac16, denom); val n = frac16 / g; val d = denom / g; return "$n/$d"
+}
+fun formatTotal16ths(total16: Int): String {
+    val inches = total16 / 16; val frac = total16 % 16
+    return if (frac == 0) "$inches\"" else "$inches ${format16ths(frac)}\""
+}
 
 @Composable
-fun Keypad(onDigit: (Int) -> Unit, onFraction: (Int) -> Unit, onBackspace: () -> Unit, onClear: () -> Unit, onSwap: () -> Unit) {
+fun Keypad(
+    onDigit: (Int) -> Unit,
+    onFraction: (Int) -> Unit,
+    onBackspace: () -> Unit,
+    onClear: () -> Unit,
+    onSwap: () -> Unit
+) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("Keypad", style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
