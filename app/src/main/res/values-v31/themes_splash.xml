@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.OverlayDoorCalculator.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/nhance_logo</item>
+        <item name="android:windowSplashScreenBackground">@android:color/white</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+    </style>
+</resources>
