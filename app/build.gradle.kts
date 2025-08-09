@@ -39,19 +39,21 @@ android {
 
     // DO NOT include composeOptions{} when using Kotlin 2.0 + compose plugin
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
-}
-
 dependencies {
-    // Compose BOM manages versions
+    // Compose BOM manages Compose versions
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    // Compose + Activity
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3:1.2.1")
+
+    // **Add this**: XML Material Components so the Theme.Material3.* style exists
+    implementation("com.google.android.material:material:1.12.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -61,3 +63,4 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }
+
