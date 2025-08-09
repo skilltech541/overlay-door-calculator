@@ -52,10 +52,22 @@ fun OverlayCalculatorApp() {
         ) {
             Text("Enter opening size. Overlay is applied per side (width: left+right, height: top+bottom).")
 
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                FieldCard("Opening Width", width, activeField == ActiveField.WIDTH) { activeField = ActiveField.WIDTH }
-                FieldCard("Opening Height", height, activeField == ActiveField.HEIGHT) { activeField = ActiveField.HEIGHT }
-            }
+           Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+    FieldCard(
+        title = "Opening Width",
+        input = width,
+        selected = (activeField == ActiveField.WIDTH),
+        onSelect = { activeField = ActiveField.WIDTH },
+        modifier = Modifier.weight(1f)
+    )
+    FieldCard(
+        title = "Opening Height",
+        input = height,
+        selected = (activeField == ActiveField.HEIGHT),
+        onSelect = { activeField = ActiveField.HEIGHT },
+        modifier = Modifier.weight(1f)
+    )
+}
 
             OverlaySelector(
                 options = overlayOptions,
