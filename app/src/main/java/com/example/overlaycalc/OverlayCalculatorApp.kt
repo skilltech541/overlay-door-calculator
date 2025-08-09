@@ -54,87 +54,90 @@ fun OverlayCalculatorApp() {
         }
     ) { inner ->
         Column(
-            modifier = Modifier
-                .padding(inner)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text("Enter opening size. Overlay is applied per side (width: left+right, height: top+bottom).")
+    modifier = Modifier
+        .padding(inner)
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
+    verticalArrangement = Arrangement.spacedBy(16.dp)
+) {
+    Text("Enter opening size. Overlay is applied per side (width: left+right, height: top+bottom).")
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                FieldCard(
-                    title = "Opening Width",
-                    input = width,
-                    selected = (activeField == ActiveField.WIDTH),
-                    onSelect = { activeField = ActiveField.WIDTH },
-                    modifier = Modifier.weight(1f)
-                )
-                FieldCard(
-                    title = "Opening Height",
-                    input = height,
-                    selected = (activeField == ActiveField.HEIGHT),
-                    onSelect = { activeField = ActiveField.HEIGHT },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            OverlaySelector(
-                options = overlayOptions,
-                selected = selectedOverlay,
-                onSelected = { selectedOverlay = it },
-                customValue16ths = customOverlay16ths,
-                onCustomChanged = { customOverlay16ths = it }
-            )
-
-            SplitSelector(
-                splitDoors = splitDoors,
-                onToggle = { splitDoors = it },
-                centerGap16ths = centerGap16ths,
-                onGapChanged = { centerGap16ths = it }
-            )
-
-            ResultCard(finished = finished, perDoor = perDoor)
-
-            Divider()
-
-            Keypad(
-                onDigit = { d ->
-                    when (activeField) {
-                        ActiveField.WIDTH -> width = width.addDigit(d)
-                        ActiveField.HEIGHT -> height = height.addDigit(d)
-                    }
-                },
-                onFraction = { f16 ->
-                    when (activeField) {
-                        ActiveField.WIDTH -> width = width.setFraction(f16)
-                        ActiveField.HEIGHT -> height = height.setFraction(f16)
-                    }
-                },
-                onBackspace = {
-                    when (activeField) {
-                        ActiveField.WIDTH -> width = width.backspace()
-                        ActiveField.HEIGHT -> height = height.backspace()
-                    }
-                },
-                onClear = {
-                    when (activeField) {
-                        ActiveField.WIDTH -> width = MeasureInput()
-                        ActiveField.HEIGHT -> height = MeasureInput()
-                    }
-                },
-                onSwap = {
-                    activeField =
-                        if (activeField == ActiveField.WIDTH) ActiveField.HEIGHT else ActiveField.WIDTH
-                }
-            )
-        }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        FieldCard(
+            title = "Opening Width",
+            input = width,
+            selected = (activeField == ActiveField.WIDTH),
+            onSelect = { activeField = ActiveField.WIDTH },
+            modifier = Modifier.weight(1f)
+        )
+        FieldCard(
+            title = "Opening Height",
+            input = height,
+            selected = (activeField == ActiveField.HEIGHT),
+            onSelect = { activeField = ActiveField.HEIGHT },
+            modifier = Modifier.weight(1f)
+        )
     }
+
+    // ⬇️ Keypad moved here, BEFORE overlay
+    Keypad(
+        onDigit = { d ->
+            when (activeField) {
+                ActiveField.WIDTH -> width = width.addDigit(d)
+                ActiveField.HEIGHT -> height = height.addDigit(d)
+            }
+        },
+        onFraction = { f16 ->
+            when (activeField) {
+                ActiveField.WIDTH -> width = width.setFraction(f16)
+                ActiveField.HEIGHT -> height = height.setFraction(f16)
+            }
+        },
+        onBackspace = {
+            when (activeField) {
+                ActiveField.WIDTH -> width = width.backspace()
+                ActiveField.HEIGHT -> height = height.backspace()
+            }
+        },
+        onClear = {
+            when (activeField) {
+                ActiveField.WIDTH -> width = MeasureInput()
+                ActiveField.HEIGHT -> height = MeasureInput()
+            }
+        },
+        onSwap = {
+            activeField = if (activeField == ActiveField.WIDTH) ActiveField.HEIGHT else ActiveField.WIDTH
+        }
+    )
+
+    Divider()
+
+    // Overlay picker now comes after keypad
+    OverlaySelector(
+        options = overlayOptions,
+        selected = selectedOverlay,
+        onSelected = { selectedOverlay = it },
+        customValue16ths = customOverlay16ths,
+        onCustomChanged = { customOverlay16ths = it }
+    )
+
+    SplitSelector(
+        splitDoors = splitDoors,
+        onToggle = { splitDoors = it },
+        centerGap16ths = centerGap16ths,
+        onGapChanged = { centerGap16ths = it }
+    )
+
+    ResultCard(finished = finished, perDoor = perDoor)
+
+    Divider()
+    Text("Formula: finished = opening + 2 × overlay (per side). Rounded to nearest 1/16\".")
 }
+
 
 enum class ActiveField { WIDTH, HEIGHT }
 data class OverlayOption(val label: String, val value16ths: Int)
